@@ -65,10 +65,10 @@ const BankFormRegistrationAdmin = ({ onRegisterSuccess }) => {
   try {
 
     const newAdmin = {
-      username: data.adminName.trim().toLowerCase(),
-      fullName: data.adminName.trim(),
-      password: data.password,
+      firstname: data.adminName,
+      lastName: "",
       phone: data.phone,
+      password: data.password,
       userType: "admin",
     };
 
