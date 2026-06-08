@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -84,11 +85,12 @@ const LoginComponent = ({ onLogin }) => {    //onLogin is a props calls from App
             password: data.password,
           };
 
-    const response = await axios.post(
-      "http://localhost:5000/api/users/login",
-      payload
-    );
+    const API_URL = import.meta.env.VITE_API_URL;
 
+const response = await axios.post(
+  `${API_URL}/api/users/login`,
+  payload
+);
     const user = response.data.user;
 
     localStorage.setItem(

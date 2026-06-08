@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import "../App.css";
 const BankFormRegistrationAdmin = ({ onRegisterSuccess }) => {
@@ -71,10 +72,12 @@ const BankFormRegistrationAdmin = ({ onRegisterSuccess }) => {
       userType: "admin",
     };
 
-    const response = await axios.post(
-      "http://localhost:5000/api/users/register",
-      newAdmin
-    );
+    const API_URL = import.meta.env.VITE_API_URL;
+
+const response = await axios.post(
+  `${API_URL}/api/users/register`,
+  newAdmin
+);
 
     alert(response.data.message);
 

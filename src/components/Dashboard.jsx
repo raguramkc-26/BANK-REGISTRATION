@@ -340,7 +340,7 @@ const handleSaveEdit = () => {
     <form
       onSubmit={handleSubmitAtm((data) => {
         dispatch(addAtmApplication({ ...data,
-        name: username,      
+        username,      
         status: "Pending",
         reason: "" }));
         resetAtm();
@@ -375,7 +375,7 @@ const handleSaveEdit = () => {
     <form
       onSubmit={handleSubmitLoan((data) => {
         dispatch(addLoanApplication({...data,
-            name: username,      
+            username,      
             status: "Pending",
             reason: ""}));
         resetLoan();
