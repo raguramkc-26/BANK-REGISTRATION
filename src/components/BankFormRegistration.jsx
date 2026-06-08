@@ -83,14 +83,12 @@ const BankFormRegistration = ({ onRegisterSuccess }) => {
   const onSubmit = async (data) => {
   try {
     const newUser = {
-      username: `${data.firstName}${data.lastName}`
-        .replace(/\s+/g, "")
-        .toLowerCase(),
-      fullName: `${data.firstName} ${data.lastName}`,
-      phone: data.phone,
-      password: data.password,
-      userType: "user",
-    };
+  firstName: data.firstName,
+  lastName: data.lastName,
+  phone: data.phone,
+  password: data.password,
+  userType: "user",
+};
 
     const API_URL = import.meta.env.VITE_API_URL;
 const response = await axios.post(
