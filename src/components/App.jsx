@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import BankFormRegistration from "./BankFormRegistration";
 import BankFormRegistrationAdmin from "./BankFormRegistrationAdmin";
 import LoginComponent from "./LoginComponent";
-import Dashboard from "./DashBoard";
+import Dashboard from "./Dashboard";
 import "../App.css";
 
 function App() {
