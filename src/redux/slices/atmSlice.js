@@ -1,37 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
-const loadAtmApplications = () => {
-  const stored = localStorage.getItem("atmApplications");
-  return stored ? JSON.parse(stored) : [];
-};
-const nextId = (arr) => (arr.length ? Math.max(...arr.map((x) => Number(x.id) || 0)) + 1 : 1);
 
 const atmSlice = createSlice({
   name: "atm",
   initialState: {
-    list: loadAtmApplications(),
+    list: [],
   },
   reducers: {
-    addAtmApplication(state, action) { 
-      const app = {
-        id: nextId(state.list),
-        status: "Pending",
-        reason: "",
-        ...action.payload,
-      };
-      state.list.push(app);
-      localStorage.setItem("atmApplications", JSON.stringify(state.list)); 
+    setAtmApplications(state, action) {
+      state.list = action.payload;
     },
+
+    addAtmApplication(state, action) {
+      state.list.push(action.payload);
+    },
+
     updateAtmApplication(state, action) {
-      const { id, status, reason } = action.payload;
-      const app = state.list.find((a) => a.id === id);
-      if (app) {
-        app.status = status;
-        app.reason = reason;
-        localStorage.setItem("atmApplications", JSON.stringify(state.list));
+      const index = state.list.findIndex(
+        (a) => a._id === action.payload._id
+      );
+
+      if (index !== -1) {
+        state.list[index] = action.payload;
       }
-    }
-  }
+    },
+  },
 });
 
-export const { addAtmApplication, updateAtmApplication } = atmSlice.actions;
+export const {
+  setAtmApplications,
+  addAtmApplication,
+  updateAtmApplication,
+} = atmSlice.actions;
+
 export default atmSlice.reducer;

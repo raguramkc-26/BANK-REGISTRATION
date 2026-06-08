@@ -70,39 +70,50 @@ const LoginComponent = ({ onLogin }) => {    //onLogin is a props calls from App
     </div>
   );
 
-  const onSubmit = (data) => {
-    console.log(`${loginType} login attempt:`, data);
+  const onSubmit = async (data) => {
+  try {
 
-     const users = JSON.parse(localStorage.getItem("users")) || [];
-  console.log("Users in localStorage:", users);
+    const payload =
+      loginType === "admin"
+        ? {
+            username: data.adminUser,
+            password: data.password,
+          }
+        : {
+            username: data.userName,
+            password: data.password,
+          };
 
-  let foundUser = null;
-
-  if (loginType === "admin") {      //if else is used to handle different login page
-    foundUser = users.find(
-      (u) =>
-        u.username.toLowerCase().trim() === data.adminUser.toLowerCase().trim() &&
-        u.password === data.password &&
-        u.userType === "admin"
+    const response = await axios.post(
+      "http://localhost:5000/api/users/login",
+      payload
     );
-  } else {
-    foundUser = users.find(
-      (u) =>
-        u.username.toLowerCase().trim() === data.userName.toLowerCase().trim() &&
-        u.password === data.password &&
-        u.userType === "user"
+
+    const user = response.data.user;
+
+    localStorage.setItem(
+      "token",
+      response.data.token
     );
+
+    dispatch(
+      login({
+        username: user.username,
+        userType: user.userType,
+      })
+    );
+
+    navigate("/dashboard");
+
+  } catch (error) {
+
+    alert(
+      error.response?.data?.message ||
+      "Invalid Username or Password"
+    );
+
   }
-      if (foundUser) {    //if user is registred already then it shows login type directly if not register it shows invalid then user have to register and login
-        alert(`${foundUser.userType} login successful!`);
-        localStorage.setItem("username", foundUser.username);    //local storage is used to store data locally in pc 
-        localStorage.setItem("userType", foundUser.userType);    
-        dispatch(login({ userType: foundUser.userType, username: foundUser.username }));
-        navigate("/dashboard"); 
-      } else {
-        alert("Invalid Username or Password!");
-      }
-  };
+};
 
   return (
 

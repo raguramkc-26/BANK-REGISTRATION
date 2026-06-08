@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import "../App.css";
 const BankFormRegistration = ({ onRegisterSuccess }) => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ mode: "onChange" });
@@ -80,43 +80,33 @@ const BankFormRegistration = ({ onRegisterSuccess }) => {
       {errors[field.name] && <span className="error-message">{errors[field.name].message}</span>}
     </div>
   );
-
-  const onSubmit = (data) => {
-    console.log("Form Submitted:", data);
-    let existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    const normalizedUsername = `${data.firstName}${data.lastName}`
-    .replace(/\s+/g, "")
-    .toLowerCase();
-  const existingUser = existingUsers.find(
-    (u) => u.username.replace(/\s+/g, "").toLowerCase() === normalizedUsername
-  );
-  if (existingUser && existingUser.password) {
-    alert("User already exists! Please login instead.");   //User already fully registered (has password)
-    return;
-  }
-  else if (existingUser && !existingUser.password) {
-    existingUser.password = data.password;
-    existingUser.phone = data.phone;
-    existingUser.fullName = `${data.firstName} ${data.lastName}`;    //Admin added user without password — allow them to set password
-    localStorage.setItem("users", JSON.stringify(existingUsers));
-    alert("Account setup completed! You can now login.");
-    console.log("Account setup completed:", existingUser);
-    if (onRegisterSuccess) onRegisterSuccess();
-    return;
-  }
+  const onSubmit = async (data) => {
+  try {
     const newUser = {
-      id: uuidv4(),
-      username: normalizedUsername,
-      fullName: `${data.firstName} ${data.lastName}`,   //Completely new user registration
-      password: data.password,
+      username: `${data.firstName}${data.lastName}`
+        .replace(/\s+/g, "")
+        .toLowerCase(),
+      fullName: `${data.firstName} ${data.lastName}`,
       phone: data.phone,
-      userType: "user", // default role
+      password: data.password,
+      userType: "user",
     };
-    localStorage.setItem("users", JSON.stringify([...existingUsers, newUser]));
-    alert("User registered successfully!");
-    console.log("User registered successfully:", newUser);
-    if (onRegisterSuccess) onRegisterSuccess();
-  };
+
+    const response = await axios.post(
+      "http://localhost:5000/api/users/register",
+      newUser
+    );
+
+    alert(response.data.message);
+    onRegisterSuccess?.();
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      "Registration Failed"
+    );
+  }
+};
   return (
     <div className="form-container">
       <h1>Bank Form Registration</h1>
@@ -129,6 +119,6 @@ const BankFormRegistration = ({ onRegisterSuccess }) => {
 </p>
     </div>
   );
-};
+}
 
 export default BankFormRegistration;   

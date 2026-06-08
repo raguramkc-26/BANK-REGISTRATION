@@ -60,31 +60,35 @@ const BankFormRegistrationAdmin = ({ onRegisterSuccess }) => {
     </div>
   );
 
-  const onSubmit = (data) => {
-    console.log("Admin Form Submitted:", data);
-
-    let existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    const username = data.adminName.trim().toLowerCase();
-
-  const isDuplicate = existingUsers.some((u) => u.username.toLowerCase() === username);
-  if (isDuplicate) {
-    alert("Admin already exists! Please login instead.");
-    return;
-  }
+  const onSubmit = async (data) => {
+  try {
 
     const newAdmin = {
       username: data.adminName.trim().toLowerCase(),
       fullName: data.adminName.trim(),
       password: data.password,
       phone: data.phone,
-      userType: "admin", 
+      userType: "admin",
     };
 
-    localStorage.setItem("users", JSON.stringify([...existingUsers, newAdmin]));
+    const response = await axios.post(
+      "http://localhost:5000/api/users/register",
+      newAdmin
+    );
 
-    alert("Admin registered successfully!");
-    if (onRegisterSuccess) onRegisterSuccess();
-  };
+    alert(response.data.message);
+
+    onRegisterSuccess?.();
+
+  } catch (error) {
+
+    alert(
+      error.response?.data?.message ||
+      "Admin Registration Failed"
+    );
+
+  }
+};
 
   return (
     <div className="form-container">
