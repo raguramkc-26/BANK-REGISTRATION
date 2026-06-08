@@ -92,10 +92,11 @@ const BankFormRegistration = ({ onRegisterSuccess }) => {
       userType: "user",
     };
 
-    const response = await axios.post(
-      "http://localhost:5000/api/users/register",
-      newUser
-    );
+    const API_URL = import.meta.env.VITE_API_URL;
+const response = await axios.post(
+  `${API_URL}/api/users/register`,
+  newUser
+);
 
     alert(response.data.message);
     onRegisterSuccess?.();
